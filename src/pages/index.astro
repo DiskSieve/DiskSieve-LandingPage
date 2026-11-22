@@ -1,18 +1,43 @@
 ---
+import Base from "../layouts/Base.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="A fast, offline disk space analyzer for developers and power users." />
-    <title>DiskSieve</title>
-  </head>
-  <body>
-    <h1>DiskSieve</h1>
-    <p>A fast, offline disk space analyzer for developers and power users.</p>
-    <p><a href="https://github.com/DiskSieve/disksieve/releases/latest">Download from GitHub Releases</a></p>
-  </body>
-</html>
+<Base>
+  <section class="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+    <p class="text-primary font-mono text-sm">v0.2.0 · Windows · macOS · Linux</p>
+    <h1 class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
+      Know what takes space, what's safe to delete, and what grew.
+    </h1>
+    <p class="text-muted-foreground mt-6 max-w-2xl text-lg">
+      A fast, offline disk space analyzer for developers and power users.
+    </p>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a
+        href="https://github.com/DiskSieve/disksieve/releases/latest"
+        class="bg-primary text-primary-foreground shadow-glow rounded-md px-5 py-2.5 font-medium transition hover:brightness-110"
+      >
+        Download from GitHub Releases
+      </a>
+      <a
+        href="https://github.com/DiskSieve/disksieve"
+        class="border-border bg-card hover:border-primary/50 rounded-md border px-5 py-2.5 font-medium transition-colors"
+      >
+        View on GitHub
+      </a>
+    </div>
+    <div class="border-border bg-card mt-16 grid gap-px overflow-hidden rounded-lg border sm:grid-cols-3">
+      <div class="bg-card p-5">
+        <div class="text-primary font-mono text-2xl">34.5 GB</div>
+        <div class="text-muted-foreground mt-1 text-sm">Design tokens preview: mono numbers</div>
+      </div>
+      <div class="bg-card p-5">
+        <div class="font-mono text-2xl">1,000,000</div>
+        <div class="text-muted-foreground mt-1 text-sm">tabular-nums in JetBrains Mono</div>
+      </div>
+      <div class="bg-card p-5">
+        <div class="text-muted-foreground font-mono text-2xl">C:\Users\dev</div>
+        <div class="text-muted-foreground mt-1 text-sm">Paths use the mono font too</div>
+      </div>
+    </div>
+  </section>
+</Base>

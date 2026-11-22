@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* DiskSieve design tokens, shared with the app (dark-first, emerald accent). */
+@theme {
+  --color-background: #0b0d0c;
+  --color-card: #121514;
+  --color-border: #1f2422;
+  --color-foreground: #e8ece9;
+  --color-muted-foreground: #8e9893;
+  --color-primary: #22c55e;
+  --color-primary-foreground: #04120a;
+  --color-danger: #ef4444;
+
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  --shadow-glow: 0 0 0 1px rgb(34 197 94 / 0.35), 0 8px 32px -6px rgb(34 197 94 / 0.45);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    @apply bg-background font-sans text-foreground antialiased;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-foreground;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  /* Numbers, versions, sizes, paths and hashes: monospace with tabular figures. */
+  code,
+  kbd,
+  samp,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
