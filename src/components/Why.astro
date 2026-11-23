@@ -21,17 +21,38 @@ const coming = shown.filter((i) => i.comingIn);
 
 <section id="features" class="border-border scroll-mt-16 border-t" aria-labelledby="why-title">
   <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-    <div class="mx-auto max-w-2xl text-center">
+    <div data-reveal class="mx-auto max-w-2xl text-center">
       <h2 id="why-title" class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
         {why.title}
       </h2>
       <p class="text-muted-foreground mt-4 text-lg text-pretty">{why.subtitle}</p>
     </div>
 
+    <figure class="mx-auto mt-12 max-w-4xl">
+      <dl class="grid gap-4 sm:grid-cols-3">
+        {why.stats.map((s, i) => (
+          <div
+            data-reveal
+            style={`--reveal-delay: ${i * 90}ms`}
+            class="border-border bg-card flex flex-col rounded-xl border p-5 text-center"
+          >
+            <dt class="text-muted-foreground order-last mt-1 text-sm">{s.label}</dt>
+            <dd class="text-primary font-mono text-3xl font-semibold">
+              <span data-count={s.value} class="inline-block text-right" style={`min-width: ${s.value.length}ch`}>
+                {s.value}
+              </span>{" "}
+              {s.unit}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <figcaption class="text-muted-foreground mt-3 text-center text-xs">{why.statsNote}</figcaption>
+    </figure>
+
     <div class="mt-16 flex flex-col gap-16 sm:mt-20 lg:gap-24">
       {released.map((item, i) => (
         <article class="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
-          <div class:list={["lg:col-span-5", i % 2 === 1 && "lg:order-last"]}>
+          <div data-reveal class:list={["lg:col-span-5", i % 2 === 1 && "lg:order-last"]}>
             <span class="border-primary/30 bg-primary/10 text-primary inline-flex size-10 items-center justify-center rounded-lg border">
               <Icon name={item.icon} />
             </span>
@@ -39,7 +60,11 @@ const coming = shown.filter((i) => i.comingIn);
             <p class="text-muted-foreground mt-3 leading-relaxed text-pretty">{item.text}</p>
           </div>
           {item.image && (
-            <div class="border-border bg-card rounded-xl border p-1.5 lg:col-span-7">
+            <div
+              data-reveal
+              style="--reveal-delay: 120ms"
+              class="border-border bg-card rounded-xl border p-1.5 lg:col-span-7"
+            >
               <Image
                 src={item.image.src}
                 alt={item.image.alt}
@@ -55,7 +80,7 @@ const coming = shown.filter((i) => i.comingIn);
     </div>
 
     {coming.map((item) => (
-      <article class="border-border mt-16 rounded-xl border border-dashed p-6 sm:mt-24 sm:p-8">
+      <article data-reveal class="border-border mt-16 rounded-xl border border-dashed p-6 sm:mt-24 sm:p-8">
         <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
           <span class="border-border text-muted-foreground inline-flex size-10 shrink-0 items-center justify-center rounded-lg border">
             <Icon name={item.icon} />
