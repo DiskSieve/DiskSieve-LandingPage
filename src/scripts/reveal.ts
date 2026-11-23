@@ -38,21 +38,24 @@ const show = (el: Element, animate: boolean) => {
 const elements = [...document.querySelectorAll("[data-reveal]")];
 
 if (!reduced && "IntersectionObserver" in window && elements.length > 0) {
+  // The first callback reports every element with its box, measured by the browser during its own layout (reading
+  // getBoundingClientRect here would force an early layout). Elements already on screen are shown without animation,
+  // and only then does `html.js` hide the rest, so nothing on screen blinks.
+  let initial = true;
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
+        const box = entry.boundingClientRect;
+        const onScreen = initial ? box.top < window.innerHeight && box.bottom > 0 : entry.isIntersecting;
+        if (!onScreen) continue;
         observer.unobserve(entry.target);
-        show(entry.target, true);
+        show(entry.target, !initial);
       }
+      if (initial) document.documentElement.classList.add("js");
+      initial = false;
     },
     { rootMargin: "0px 0px -10% 0px" },
   );
 
-  for (const el of elements) {
-    const box = el.getBoundingClientRect();
-    if (box.top < window.innerHeight && box.bottom > 0) show(el, false);
-    else observer.observe(el);
-  }
-  document.documentElement.classList.add("js");
+  for (const el of elements) observer.observe(el);
 }

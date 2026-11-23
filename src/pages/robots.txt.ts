@@ -6,6 +6,6 @@ import { SITE } from "../content/seo";
  * `noindex` itself, which crawlers can only see if they may fetch it.
  */
 export const GET: APIRoute = () =>
-  new Response(`User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`, {
+  new Response(`User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\nAgentmap: ${SITE}/.well-known/ard.json\n`, {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });

@@ -32,11 +32,12 @@ if (!first) throw new Error("No hero screenshots");
       </h1>
       <p class="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg text-pretty">{hero.subtitle}</p>
 
+      {/* min-w-60 fits "Download for Windows", so the label set by download.ts does not shift the layout (CLS). */}
       <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
         <a
           href={links.latestRelease}
           data-download-primary
-          class="bg-primary text-primary-foreground shadow-glow inline-flex items-center gap-2 rounded-md px-5 py-2.5 font-medium transition hover:brightness-110"
+          class="bg-primary text-primary-foreground shadow-glow inline-flex min-w-60 items-center justify-center gap-2 rounded-md px-5 py-2.5 font-medium transition hover:brightness-110"
         >
           <svg
             aria-hidden="true"
