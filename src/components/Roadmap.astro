@@ -1,0 +1,53 @@
+---
+import { links, roadmap } from "../content/site";
+import Icon from "./Icon.astro";
+---
+
+<section class="border-border border-t" aria-labelledby="roadmap-title">
+  <div class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
+    <h2 id="roadmap-title" class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">
+      {roadmap.title}
+    </h2>
+
+    <ol class="mt-12">
+      {roadmap.items.map((item, i) => {
+        const released = item.status === "released";
+        const last = i === roadmap.items.length - 1;
+        return (
+          <li class="relative flex gap-5 pb-8 last:pb-0">
+            {!last && <span aria-hidden="true" class="bg-border absolute top-8 bottom-0 left-[15px] w-px" />}
+            <span
+              aria-hidden="true"
+              class:list={[
+                "relative flex size-8 shrink-0 items-center justify-center rounded-full border",
+                released ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-background",
+              ]}
+            >
+              {released ? <Icon name="check" class="size-4" /> : <span class="bg-border size-2 rounded-full" />}
+            </span>
+            <div class="pt-1">
+              <div class="flex flex-wrap items-center gap-3">
+                <h3 class:list={["font-mono font-semibold", !released && "text-muted-foreground"]}>{item.version}</h3>
+                <span
+                  class:list={[
+                    "rounded-full border px-2 py-0.5 text-xs",
+                    released ? "border-primary/40 text-primary" : "border-border text-muted-foreground",
+                  ]}
+                >
+                  {released ? "Released" : "Planned"}
+                </span>
+              </div>
+              <p class="text-muted-foreground mt-2 leading-relaxed">{item.text}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+
+    <p class="mt-10 text-center text-sm">
+      <a href={links.changelog} class="text-muted-foreground hover:text-foreground underline underline-offset-4">
+        Full changelog
+      </a>
+    </p>
+  </div>
+</section>
