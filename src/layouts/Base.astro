@@ -4,6 +4,7 @@ import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 import Logo from "../assets/logo.svg";
 import { footer, links, meta, nav } from "../content/site";
+import { ogImage, structuredData } from "../content/seo";
 
 interface Props {
   title?: string;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const { title = meta.title, description = meta.description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const image = new URL(ogImage.src, Astro.site).href;
 const year = new Date().getFullYear();
 ---
 
@@ -23,8 +26,33 @@ const year = new Date().getFullYear();
     <meta name="theme-color" content="#0B0D0C" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="alternate" type="text/markdown" title="DiskSieve for AI assistants (llms.txt)" href="/llms.txt" />
     <title>{title}</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DiskSieve" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content={String(ogImage.width)} />
+    <meta property="og:image:height" content={String(ogImage.height)} />
+    <meta property="og:image:alt" content={ogImage.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content={ogImage.alt} />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData()).replaceAll("<", "\\u003c")}
+    />
   </head>
   <body class="flex min-h-dvh flex-col">
     <a
