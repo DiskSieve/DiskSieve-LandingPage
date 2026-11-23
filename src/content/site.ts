@@ -99,7 +99,10 @@ export type IconName =
   | "cloud-off"
   | "wifi-off"
   | "eye-off"
-  | "code";
+  | "code"
+  | "check"
+  | "minus"
+  | "x";
 
 export type ScreenKey = (typeof screens)[number]["key"];
 
@@ -194,6 +197,92 @@ export const features = {
       text: "Does not follow symlinks or junctions, stays on one drive, counts hard links once and shows both logical size and size on disk.",
     },
   ] satisfies Feature[],
+} as const;
+
+/** A cell of the comparison table: "partial" always carries a note that says why. */
+export type Support = "yes" | "no" | { partial: string };
+
+/** Comparison with other tool categories (spec 2.5). Only facts that can be checked in public documentation. */
+export const comparison = {
+  title: "How it compares",
+  subtitle: "Every tool here is good at its job. DiskSieve brings their best parts into one app.",
+  columns: [
+    "DiskSieve",
+    "WizTree",
+    "WinDirStat / SpaceSniffer",
+    "TreeSize",
+    "DaisyDisk",
+    "ncdu / dust",
+    "npkill / kondo",
+    "Czkawka",
+  ],
+  rows: [
+    {
+      label: "Windows, macOS and Linux",
+      values: ["yes", "no", "no", "no", "no", { partial: "No Windows build of ncdu" }, "yes", "yes"],
+    },
+    {
+      label: "Open source",
+      values: ["yes", "no", { partial: "WinDirStat only" }, "no", "no", "yes", "yes", "yes"],
+    },
+    {
+      label: "Free",
+      values: [
+        "yes",
+        { partial: "Free for personal use" },
+        "yes",
+        { partial: "Free edition, paid features" },
+        "no",
+        "yes",
+        "yes",
+        "yes",
+      ],
+    },
+    {
+      label: "Treemap",
+      values: ["yes", "yes", "yes", "yes", { partial: "Sunburst chart" }, "no", "no", "no"],
+    },
+    {
+      label: "Explains what is safe to delete",
+      values: ["yes", "no", "no", "no", "no", "no", { partial: "npkill flags folders apps need" }, "no"],
+    },
+    {
+      label: "Finds build artifacts of projects",
+      values: ["yes", "no", "no", "no", "no", "no", "yes", "no"],
+    },
+    {
+      label: "Shows what changed since the last scan",
+      values: ["yes", "no", "no", { partial: "Paid editions" }, "no", "no", "no", "no"],
+    },
+    {
+      label: "Duplicate files by content",
+      values: [
+        "yes",
+        { partial: "By name and size" },
+        { partial: "WinDirStat only" },
+        { partial: "Paid editions" },
+        "no",
+        "no",
+        "no",
+        "yes",
+      ],
+    },
+    {
+      label: "Deletes only to Trash",
+      values: [
+        "yes",
+        { partial: "Shift+Delete is permanent" },
+        { partial: "Permanent delete too" },
+        { partial: "Shift+Delete is permanent" },
+        "no",
+        "no",
+        "no",
+        { partial: "Trash is optional" },
+      ],
+    },
+  ] satisfies { label: string; values: Support[] }[],
+  note: "Based on public documentation as of November 2026. Corrections welcome:",
+  correctionsLabel: "open an issue",
 } as const;
 
 export const privacy = {
