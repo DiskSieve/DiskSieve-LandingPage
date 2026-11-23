@@ -15,6 +15,8 @@ export const links = {
   issues: `${repo}/issues`,
   changelog: `${repo}/blob/main/CHANGELOG.md`,
   license: `${repo}/blob/main/LICENSE`,
+  /** Live demo: the app's own frontend with demo data, built by scripts/demo.mjs. */
+  demo: "/demo/",
 } as const;
 
 /** Latest release at build time. The download script replaces it with live data from the GitHub API. */
@@ -45,6 +47,7 @@ export const hero = {
   primaryCta: "Download",
   /** With JavaScript: "Download for Windows". */
   primaryCtaFor: "Download for",
+  demoCta: "Try it in your browser",
   secondaryCta: "View on GitHub",
   otherPlatforms: "Other platforms",
 } as const;
@@ -102,7 +105,8 @@ export type IconName =
   | "code"
   | "check"
   | "minus"
-  | "x";
+  | "x"
+  | "monitor-play";
 
 export type ScreenKey = (typeof screens)[number]["key"];
 
