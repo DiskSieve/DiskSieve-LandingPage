@@ -1,0 +1,32 @@
+---
+/** Lucide icon as inline SVG, resolved at build time (no runtime JS, no icon font). Decorative: hidden from AT. */
+import type { IconName } from "../content/site";
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className = "size-5" } = Astro.props;
+
+const icons = import.meta.glob<string>("/node_modules/lucide-static/icons/*.svg", {
+  query: "?raw",
+  import: "default",
+});
+const load = icons[`/node_modules/lucide-static/icons/${name}.svg`];
+if (!load) throw new Error(`Unknown Lucide icon: ${name}`);
+const inner = (await load()).match(/<svg[^>]*>([\s\S]*)<\/svg>/)?.[1]?.trim();
+if (!inner) throw new Error(`Unreadable Lucide icon: ${name}`);
+---
+
+<svg
+  aria-hidden="true"
+  class={className}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  set:html={inner}
+/>

@@ -1,0 +1,76 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import { screens, why } from "../content/site";
+import Icon from "./Icon.astro";
+
+const files = import.meta.glob<{ default: ImageMetadata }>("../assets/screens/*.png", { eager: true });
+// Same candidate widths as the hero, so a screenshot already fetched by the slider comes from the cache.
+const widths = [800, 1200, 1600, 2400];
+const sizes = "(min-width: 1152px) 620px, (min-width: 1024px) 55vw, calc(100vw - 2.5rem)";
+
+const shown = why.items.map((item) => {
+  const screen = item.screen && screens.find((s) => s.key === item.screen);
+  const file = screen && files[`../assets/screens/${screen.key}.png`];
+  if (item.screen && !file) throw new Error(`Missing screenshot: src/assets/screens/${item.screen}.png`);
+  return { ...item, image: screen && file ? { src: file.default, alt: screen.alt } : undefined };
+});
+const released = shown.filter((i) => !i.comingIn);
+const coming = shown.filter((i) => i.comingIn);
+---
+
+<section id="features" class="border-border scroll-mt-16 border-t" aria-labelledby="why-title">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 id="why-title" class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+        {why.title}
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg text-pretty">{why.subtitle}</p>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-16 sm:mt-20 lg:gap-24">
+      {released.map((item, i) => (
+        <article class="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+          <div class:list={["lg:col-span-5", i % 2 === 1 && "lg:order-last"]}>
+            <span class="border-primary/30 bg-primary/10 text-primary inline-flex size-10 items-center justify-center rounded-lg border">
+              <Icon name={item.icon} />
+            </span>
+            <h3 class="mt-5 text-2xl font-semibold tracking-tight">{item.title}</h3>
+            <p class="text-muted-foreground mt-3 leading-relaxed text-pretty">{item.text}</p>
+          </div>
+          {item.image && (
+            <div class="border-border bg-card rounded-xl border p-1.5 lg:col-span-7">
+              <Image
+                src={item.image.src}
+                alt={item.image.alt}
+                {widths}
+                {sizes}
+                loading="lazy"
+                class="h-auto w-full rounded-lg"
+              />
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+
+    {coming.map((item) => (
+      <article class="border-border mt-16 rounded-xl border border-dashed p-6 sm:mt-24 sm:p-8">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
+          <span class="border-border text-muted-foreground inline-flex size-10 shrink-0 items-center justify-center rounded-lg border">
+            <Icon name={item.icon} />
+          </span>
+          <div>
+            <div class="flex flex-wrap items-center gap-3">
+              <h3 class="text-xl font-semibold tracking-tight">{item.title}</h3>
+              <span class="border-border text-muted-foreground rounded-full border px-2 py-0.5 font-mono text-xs">
+                Coming in {item.comingIn}
+              </span>
+            </div>
+            <p class="text-muted-foreground mt-2 max-w-3xl leading-relaxed text-pretty">{item.text}</p>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
