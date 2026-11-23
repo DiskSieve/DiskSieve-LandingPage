@@ -1,43 +1,40 @@
 ---
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import screenshot from "../assets/screenshot.png";
+import { hero, links, release } from "../content/site";
 ---
 
 <Base>
-  <section class="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
-    <p class="text-primary font-mono text-sm">v0.2.0 · Windows · macOS · Linux</p>
-    <h1 class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
-      Know what takes space, what's safe to delete, and what grew.
-    </h1>
-    <p class="text-muted-foreground mt-6 max-w-2xl text-lg">
-      A fast, offline disk space analyzer for developers and power users.
-    </p>
-    <div class="mt-10 flex flex-wrap gap-3">
+  <!-- Temporary hero; the real one is built in step 2.2. -->
+  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+    <p class="text-primary font-mono text-sm">{hero.eyebrow}</p>
+    <h1 class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl">{hero.title}</h1>
+    <p class="text-muted-foreground mt-6 max-w-2xl text-lg">{hero.subtitle}</p>
+    <div class="mt-10 flex flex-wrap items-center gap-3">
       <a
-        href="https://github.com/DiskSieve/disksieve/releases/latest"
+        href={links.latestRelease}
         class="bg-primary text-primary-foreground shadow-glow rounded-md px-5 py-2.5 font-medium transition hover:brightness-110"
       >
-        Download from GitHub Releases
+        {hero.primaryCta}
       </a>
       <a
-        href="https://github.com/DiskSieve/disksieve"
+        href={links.repo}
         class="border-border bg-card hover:border-primary/50 rounded-md border px-5 py-2.5 font-medium transition-colors"
       >
-        View on GitHub
+        {hero.secondaryCta}
       </a>
+      <span class="text-muted-foreground font-mono text-sm">
+        v{release.version} · {release.date}
+      </span>
     </div>
-    <div class="border-border bg-card mt-16 grid gap-px overflow-hidden rounded-lg border sm:grid-cols-3">
-      <div class="bg-card p-5">
-        <div class="text-primary font-mono text-2xl">34.5 GB</div>
-        <div class="text-muted-foreground mt-1 text-sm">Design tokens preview: mono numbers</div>
-      </div>
-      <div class="bg-card p-5">
-        <div class="font-mono text-2xl">1,000,000</div>
-        <div class="text-muted-foreground mt-1 text-sm">tabular-nums in JetBrains Mono</div>
-      </div>
-      <div class="bg-card p-5">
-        <div class="text-muted-foreground font-mono text-2xl">C:\Users\dev</div>
-        <div class="text-muted-foreground mt-1 text-sm">Paths use the mono font too</div>
-      </div>
-    </div>
+    <Image
+      src={screenshot}
+      alt={hero.screenshotAlt}
+      widths={[800, 1200, 1600]}
+      sizes="(min-width: 1152px) 1104px, 100vw"
+      loading="eager"
+      class="border-border mt-16 rounded-lg border"
+    />
   </section>
 </Base>
