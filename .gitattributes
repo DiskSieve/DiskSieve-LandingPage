@@ -1,0 +1,5 @@
+# Always LF in the repo and the working tree, so Prettier passes on Windows too.
+* text=auto eol=lf
+*.ico binary
+*.png binary
+*.woff2 binary
