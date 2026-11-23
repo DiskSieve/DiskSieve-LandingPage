@@ -5,7 +5,7 @@ import Icon from "./Icon.astro";
 
 <section class="border-border border-t" aria-labelledby="roadmap-title">
   <div class="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
-    <h2 id="roadmap-title" class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">
+    <h2 data-reveal id="roadmap-title" class="text-center text-3xl font-semibold tracking-tight sm:text-4xl">
       {roadmap.title}
     </h2>
 
@@ -14,7 +14,7 @@ import Icon from "./Icon.astro";
         const released = item.status === "released";
         const last = i === roadmap.items.length - 1;
         return (
-          <li class="relative flex gap-5 pb-8 last:pb-0">
+          <li data-reveal style={`--reveal-delay: ${i * 80}ms`} class="relative flex gap-5 pb-8 last:pb-0">
             {!last && <span aria-hidden="true" class="bg-border absolute top-8 bottom-0 left-[15px] w-px" />}
             <span
               aria-hidden="true"

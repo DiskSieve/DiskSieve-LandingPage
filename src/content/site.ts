@@ -119,6 +119,13 @@ export interface Feature {
 export const why = {
   title: "More than a treemap",
   subtitle: "Most disk analyzers stop at showing what is big. DiskSieve helps you decide what to do about it.",
+  /** Figures from the example scan in the screenshots (keep in sync with `screens` alt texts). */
+  stats: [
+    { value: "60.7", unit: "GB", label: "ready to free after one Sieve review" },
+    { value: "35", unit: "GB", label: "of Dev Junk across 13 projects" },
+    { value: "34.5", unit: "GB", label: "lost to duplicate files" },
+  ],
+  statsNote: "From the example scan in the screenshots.",
   items: [
     {
       icon: "shield-check",

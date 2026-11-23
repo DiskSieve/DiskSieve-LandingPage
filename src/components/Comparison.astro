@@ -12,7 +12,7 @@ const cell = (v: Support) =>
 
 <section class="border-border border-t" aria-labelledby="comparison-title">
   <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-    <div class="mx-auto max-w-2xl text-center">
+    <div data-reveal class="mx-auto max-w-2xl text-center">
       <h2 id="comparison-title" class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
         {comparison.title}
       </h2>
@@ -20,6 +20,7 @@ const cell = (v: Support) =>
     </div>
 
     <div
+      data-reveal
       class="border-border bg-card relative mt-12 overflow-x-auto rounded-xl border"
       tabindex="0"
       role="region"
