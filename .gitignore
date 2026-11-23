@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # agent instructions
 .claude/
+
+# app checkout for the live demo (scripts/demo.mjs)
+.demo-app/

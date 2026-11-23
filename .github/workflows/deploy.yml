@@ -32,6 +32,23 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      # Live demo (spec 2.9): the app's own frontend from its latest release, built under /demo/.
+      - name: Find the latest app release
+        id: app
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: echo "tag=$(gh release view --repo DiskSieve/disksieve --json tagName --jq .tagName)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+        with:
+          repository: DiskSieve/disksieve
+          ref: ${{ steps.app.outputs.tag }}
+          path: .demo-app
+          persist-credentials: false
+
+      - name: Build the demo
+        run: node scripts/demo.mjs .demo-app
+
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
