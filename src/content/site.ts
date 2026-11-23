@@ -101,12 +101,16 @@ export type IconName =
   | "eye-off"
   | "code";
 
+export type ScreenKey = (typeof screens)[number]["key"];
+
 export interface Feature {
   icon: IconName;
   title: string;
   text: string;
   /** Version that will ship it; set only for features that are not released yet. */
   comingIn?: string;
+  /** Screenshot from `screens` shown next to the feature. */
+  screen?: ScreenKey;
 }
 
 export const why = {
@@ -115,21 +119,25 @@ export const why = {
   items: [
     {
       icon: "shield-check",
+      screen: "advisor",
       title: "“Can I delete this?”",
       text: "The Safety Advisor explains well-known system files and caches — the hibernation file, the page file, WinSxS, Windows.old, shader, browser and package manager caches — whether they are safe to remove and the right way to free the space.",
     },
     {
       icon: "package",
+      screen: "devjunk",
       title: "Dev Junk",
       text: "Finds build artifacts and dependencies of your projects — node_modules, target, .venv and more — recognized by their project files, with the size of each and how long ago you touched it.",
     },
     {
       icon: "git-compare",
+      screen: "changes",
       title: "What grew since last time",
       text: "Every scan saves a small snapshot. Delta Mode colors the treemap by change, and the Changes view lists everything that appeared, grew, shrank or disappeared — like a git diff for your disk.",
     },
     {
       icon: "shopping-basket",
+      screen: "sieve",
       title: "Sieve Basket",
       text: "Collect items from every view, review them with Safety Advisor verdicts and the total you will free, then move everything to Trash with one confirmation.",
     },
