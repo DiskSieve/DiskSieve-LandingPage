@@ -43,6 +43,8 @@ export const hero = {
   subtitle:
     "DiskSieve is a fast, offline disk space analyzer for developers and power users. It finds the gigabytes and tells you which ones you can let go.",
   primaryCta: "Download",
+  /** With JavaScript: "Download for Windows". */
+  primaryCtaFor: "Download for",
   secondaryCta: "View on GitHub",
   otherPlatforms: "Other platforms",
 } as const;
@@ -213,9 +215,53 @@ export const privacy = {
   ] satisfies Feature[],
 } as const;
 
+export type Os = "windows" | "macos" | "linux";
+
+/**
+ * Release files per system. `pattern` is matched against the asset names of the latest GitHub release
+ * (verified on v0.2.0: `DiskSieve_0.2.0_x64-setup.exe`, `DiskSieve_0.2.0_universal.dmg`, …). The first file is the
+ * one the hero button offers. Without JavaScript every row links to the latest release page.
+ */
+export const downloadTargets = [
+  {
+    os: "windows",
+    name: "Windows",
+    detail: "x64",
+    files: [
+      { label: "Installer", ext: ".exe", pattern: "-setup\\.exe$" },
+      { label: "MSI package", ext: ".msi", pattern: "\\.msi$" },
+      { label: "Portable, no install", ext: ".exe", pattern: "-portable\\.exe$" },
+    ],
+  },
+  {
+    os: "macos",
+    name: "macOS",
+    detail: "Universal: Apple Silicon and Intel",
+    files: [{ label: "Disk image", ext: ".dmg", pattern: "\\.dmg$" }],
+  },
+  {
+    os: "linux",
+    name: "Linux",
+    detail: "x86_64",
+    files: [
+      { label: "AppImage", ext: ".AppImage", pattern: "\\.AppImage$" },
+      { label: "Debian, Ubuntu", ext: ".deb", pattern: "\\.deb$" },
+      { label: "Fedora, openSUSE", ext: ".rpm", pattern: "\\.rpm$" },
+    ],
+  },
+] as const satisfies readonly {
+  os: Os;
+  name: string;
+  detail: string;
+  files: readonly { label: string; ext: string; pattern: string }[];
+}[];
+
 export const download = {
   title: "Download DiskSieve",
   subtitle: "Free, open source and offline. Pick the file for your system.",
+  recommended: "Recommended",
+  detected: "Your system",
+  checksums: "SHA256SUMS.txt",
   unsignedNote:
     "The installers are not code-signed yet, so Windows and macOS show a warning the first time you open them. Signing is planned for v1.0.",
   steps: {
@@ -225,10 +271,10 @@ export const download = {
   },
   verify: {
     title: "Verify your download",
-    text: "Every release includes SHA256SUMS.txt. Compare it with the checksum of the file you downloaded:",
+    text: "Every release includes {file}. Compare it with the checksum of the file you downloaded:",
     commands: {
-      windows: "Get-FileHash .\\DiskSieve_x64-setup.exe -Algorithm SHA256",
-      unix: "shasum -a 256 DiskSieve.AppImage",
+      windows: `Get-FileHash .\\DiskSieve_${release.version}_x64-setup.exe -Algorithm SHA256`,
+      unix: `shasum -a 256 DiskSieve_${release.version}_amd64.AppImage`,
     },
   },
   allReleases: "All releases and release notes",

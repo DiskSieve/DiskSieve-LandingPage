@@ -51,7 +51,7 @@ if (!first) throw new Error("No hero screenshots");
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <path d="m7 10 5 5 5-5"></path>
           </svg>
-          {hero.primaryCta}
+          <span data-download-label>{hero.primaryCta}</span>
         </a>
         <a
           href={links.repo}
@@ -61,7 +61,18 @@ if (!first) throw new Error("No hero screenshots");
         </a>
       </div>
       <p class="text-muted-foreground mt-4 text-sm">
-        <span class="font-mono">v{release.version}</span> · <span class="font-mono">{release.date}</span> ·
+        <span class="font-mono" data-release-version>
+          v{release.version}
+        </span>
+        {" · "}
+        <span class="font-mono" data-release-date>
+          {release.date}
+        </span>
+        {" · "}
+        <span data-primary-size-wrap hidden>
+          <span class="font-mono" data-primary-size></span>
+          {" · "}
+        </span>
         <a href="#download" class="hover:text-foreground underline underline-offset-4">
           {hero.otherPlatforms}
         </a>
