@@ -1,0 +1,26 @@
+---
+import { privacy } from "../content/site";
+import Icon from "./Icon.astro";
+---
+
+<section class="border-border border-t" aria-labelledby="privacy-title">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-12 lg:gap-12">
+    <div class="lg:col-span-4">
+      <h2 id="privacy-title" class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+        {privacy.title}
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg text-pretty">{privacy.subtitle}</p>
+    </div>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:col-span-8">
+      {privacy.items.map((item) => (
+        <li class="border-border bg-card rounded-xl border p-5">
+          <span class="border-primary/30 bg-primary/10 text-primary inline-flex size-9 items-center justify-center rounded-lg border">
+            <Icon name={item.icon} class="size-4" />
+          </span>
+          <h3 class="mt-4 font-semibold">{item.title}</h3>
+          <p class="text-muted-foreground mt-2 text-sm leading-relaxed">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

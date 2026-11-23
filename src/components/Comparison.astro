@@ -1,0 +1,83 @@
+---
+import { comparison, links, type Support } from "../content/site";
+import Icon from "./Icon.astro";
+
+const cell = (v: Support) =>
+  v === "yes"
+    ? { icon: "check" as const, label: "Yes", note: undefined, tone: "text-primary" }
+    : v === "no"
+      ? { icon: "x" as const, label: "No", note: undefined, tone: "text-muted-foreground/60" }
+      : { icon: "minus" as const, label: "Partly:", note: v.partial, tone: "text-warning" };
+---
+
+<section class="border-border border-t" aria-labelledby="comparison-title">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 id="comparison-title" class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+        {comparison.title}
+      </h2>
+      <p class="text-muted-foreground mt-4 text-lg text-pretty">{comparison.subtitle}</p>
+    </div>
+
+    <div
+      class="border-border bg-card relative mt-12 overflow-x-auto rounded-xl border"
+      tabindex="0"
+      role="region"
+      aria-labelledby="comparison-title"
+    >
+      <table class="w-full min-w-[60rem] border-collapse text-sm">
+        <thead>
+          <tr class="border-border border-b">
+            <th
+              scope="col"
+              class="bg-card border-border sticky left-0 z-10 w-36 border-r p-3 text-left font-medium sm:w-56 sm:p-4"
+            >
+              <span class="sr-only">Feature</span>
+            </th>
+            {comparison.columns.map((name, i) => (
+              <th
+                scope="col"
+                class:list={[
+                  "p-4 text-center align-bottom font-medium",
+                  i === 0 ? "bg-primary/10 text-primary" : "text-muted-foreground",
+                ]}
+              >
+                {name}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {comparison.rows.map((row) => (
+            <tr class="border-border border-b last:border-b-0">
+              <th
+                scope="row"
+                class="bg-card border-border sticky left-0 z-10 border-r p-3 text-left font-medium sm:p-4"
+              >
+                {row.label}
+              </th>
+              {row.values.map((v, i) => {
+                const c = cell(v);
+                return (
+                  <td class:list={["p-3 text-center align-top", i === 0 && "bg-primary/10"]}>
+                    <Icon name={c.icon} class:list={["mx-auto size-4", c.tone]} />
+                    <span class="sr-only">{c.label}</span>
+                    {c.note && <span class="text-muted-foreground mt-1 block text-xs leading-snug">{c.note}</span>}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="text-muted-foreground mt-4 text-center text-xs">
+      {comparison.note}{" "}
+      <a href={links.issues} class="hover:text-foreground underline underline-offset-4">
+        {comparison.correctionsLabel}
+      </a>
+      .
+    </p>
+  </div>
+</section>
