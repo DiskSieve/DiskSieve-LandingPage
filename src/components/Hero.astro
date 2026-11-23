@@ -1,0 +1,227 @@
+---
+import type { ImageMetadata } from "astro";
+import { getImage, Image } from "astro:assets";
+import { hero, links, release, screens } from "../content/site";
+
+const files = import.meta.glob<{ default: ImageMetadata }>("../assets/screens/*.png", { eager: true });
+const widths = [800, 1200, 1600, 2400];
+const sizes = "(min-width: 1152px) 1084px, calc(100vw - 2.5rem)";
+const slides = await Promise.all(
+  screens.map(async (s) => {
+    const file = files[`../assets/screens/${s.key}.png`];
+    if (!file) throw new Error(`Missing screenshot: src/assets/screens/${s.key}.png`);
+    return { ...s, src: file.default, lazy: await getImage({ src: file.default, widths, sizes }) };
+  }),
+);
+const [first, ...rest] = slides;
+if (!first) throw new Error("No hero screenshots");
+---
+
+<section class="relative overflow-hidden" aria-labelledby="hero-title">
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 -top-40 h-[36rem] bg-[radial-gradient(ellipse_at_center,rgb(34_197_94/0.16),transparent_65%)]"
+  ></div>
+
+  <div class="relative mx-auto max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="text-primary font-mono text-xs tracking-wide sm:text-sm">{hero.eyebrow}</p>
+      <h1 id="hero-title" class="mt-5 text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
+        {hero.title}
+      </h1>
+      <p class="text-muted-foreground mx-auto mt-6 max-w-2xl text-lg text-pretty">{hero.subtitle}</p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href={links.latestRelease}
+          data-download-primary
+          class="bg-primary text-primary-foreground shadow-glow inline-flex items-center gap-2 rounded-md px-5 py-2.5 font-medium transition hover:brightness-110"
+        >
+          <svg
+            aria-hidden="true"
+            class="size-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 15V3"></path>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <path d="m7 10 5 5 5-5"></path>
+          </svg>
+          {hero.primaryCta}
+        </a>
+        <a
+          href={links.repo}
+          class="border-border bg-card hover:border-primary/50 rounded-md border px-5 py-2.5 font-medium transition-colors"
+        >
+          {hero.secondaryCta}
+        </a>
+      </div>
+      <p class="text-muted-foreground mt-4 text-sm">
+        <span class="font-mono">v{release.version}</span> · <span class="font-mono">{release.date}</span> ·
+        <a href="#download" class="hover:text-foreground underline underline-offset-4">
+          {hero.otherPlatforms}
+        </a>
+      </p>
+    </div>
+
+    <figure class="mt-14 sm:mt-20">
+      <div class="border-border bg-card shadow-glow rounded-xl border p-1.5 sm:p-2">
+        <div class="grid overflow-hidden rounded-lg" data-hero-slides>
+          <Image
+            src={first.src}
+            alt={first.alt}
+            data-slide={first.key}
+            {widths}
+            {sizes}
+            loading="eager"
+            fetchpriority="high"
+            class="h-auto w-full transition-opacity duration-700 [grid-area:1/1]"
+          />
+          {/* Other slides load only when the crossfade script (step 2.7) copies data-srcset to srcset. */}
+          {rest.map((s) => (
+            <img
+              data-slide={s.key}
+              data-alt={s.alt}
+              data-src={s.lazy.src}
+              data-srcset={s.lazy.srcSet.attribute}
+              sizes={sizes}
+              alt=""
+              aria-hidden="true"
+              width={first.src.width}
+              height={first.src.height}
+              decoding="async"
+              class="h-auto w-full opacity-0 transition-opacity duration-700 [grid-area:1/1]"
+            />
+          ))}
+        </div>
+      </div>
+      <figcaption class="mt-5 flex flex-wrap justify-center gap-2 text-sm" aria-label="Choose a screenshot">
+        {slides.map((s, i) => (
+          <button
+            type="button"
+            data-slide-label={s.key}
+            aria-pressed={i === 0 ? "true" : "false"}
+            class="border-border text-muted-foreground hover:text-foreground hover:border-primary/30 aria-pressed:border-primary/50 aria-pressed:text-foreground aria-pressed:bg-primary/10 relative cursor-pointer overflow-hidden rounded-full border px-3 py-1 transition-colors"
+          >
+            <span data-progress aria-hidden="true" class="bg-primary/35 absolute inset-y-0 left-0 w-0"></span>
+            <span class="relative">{s.label}</span>
+          </button>
+        ))}
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  // Hero screenshot switcher: a slide's image is fetched on first use (data-srcset → srcset), then crossfaded in.
+  const root = document.querySelector<HTMLElement>("[data-hero-slides]");
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>("[data-slide-label]")];
+
+  let current = buttons[0]?.dataset.slideLabel;
+
+  /** Starts fetching a slide's image (once) and returns it. */
+  const load = (key: string) => {
+    const img = root?.querySelector<HTMLImageElement>(`img[data-slide="${key}"]`);
+    if (img?.dataset.srcset) {
+      img.srcset = img.dataset.srcset;
+      img.src = img.dataset.src ?? "";
+      delete img.dataset.srcset;
+    }
+    return img;
+  };
+
+  const show = async (key: string) => {
+    if (!root || key === current) return;
+    current = key;
+    for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.slideLabel === key));
+    const next = load(key);
+    if (next && !next.complete) {
+      // Keep the current screenshot visible until the next one is ready.
+      await next.decode().catch(() => {});
+      if (current !== key) return;
+    }
+    for (const img of root.querySelectorAll<HTMLImageElement>("img[data-slide]")) {
+      const active = img.dataset.slide === key;
+      if (active) {
+        img.alt = img.dataset.alt ?? img.alt;
+        img.removeAttribute("aria-hidden");
+      } else {
+        if (!img.dataset.alt) img.dataset.alt = img.alt;
+        img.alt = "";
+        img.setAttribute("aria-hidden", "true");
+      }
+      img.classList.toggle("opacity-0", !active);
+      img.classList.toggle("opacity-100", active);
+    }
+  };
+
+  // Autoplay: the active tab fills with a progress bar over 5 s, then the next slide crossfades in. The bar's
+  // animation is the timer itself, so it pauses and resumes in place (hover, keyboard focus, hero off screen,
+  // hidden tab). Picking a slide stops autoplay for good; it never runs with prefers-reduced-motion.
+  const INTERVAL = 5000;
+  const figure = root?.closest("figure");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let stopped = reduced || buttons.length < 2;
+  let hovered = false;
+  let onScreen = false;
+  let progress: Animation | undefined;
+
+  const playing = () => !stopped && !hovered && onScreen && !document.hidden;
+
+  const nextKey = () => {
+    const i = buttons.findIndex((b) => b.dataset.slideLabel === current);
+    return buttons[(i + 1) % buttons.length]?.dataset.slideLabel;
+  };
+
+  const advance = async () => {
+    progress?.cancel();
+    progress = undefined;
+    const next = nextKey();
+    if (next) await show(next);
+    update();
+  };
+
+  const update = () => {
+    if (stopped) return;
+    if (!progress) {
+      if (!playing()) return;
+      const bar = buttons.find((b) => b.dataset.slideLabel === current)?.querySelector("[data-progress]");
+      if (!bar) return;
+      progress = bar.animate([{ width: "0%" }, { width: "100%" }], { duration: INTERVAL, easing: "linear" });
+      progress.onfinish = () => void advance();
+      // Fetch the upcoming slide while this one is shown, so the switch is instant.
+      const upcoming = nextKey();
+      if (upcoming) load(upcoming);
+      return;
+    }
+    if (playing()) progress.play();
+    else progress.pause();
+  };
+
+  for (const b of buttons)
+    b.addEventListener("click", () => {
+      stopped = true;
+      progress?.cancel();
+      void show(b.dataset.slideLabel ?? "");
+    });
+
+  if (figure && !stopped) {
+    const hover = (on: boolean) => () => {
+      hovered = on;
+      update();
+    };
+    figure.addEventListener("pointerenter", hover(true));
+    figure.addEventListener("pointerleave", hover(false));
+    figure.addEventListener("focusin", hover(true));
+    figure.addEventListener("focusout", hover(false));
+    document.addEventListener("visibilitychange", update);
+    new IntersectionObserver(([entry]) => {
+      onScreen = entry?.isIntersecting ?? false;
+      update();
+    }).observe(figure);
+  }
+</script>

@@ -45,9 +45,41 @@ export const hero = {
   primaryCta: "Download",
   secondaryCta: "View on GitHub",
   otherPlatforms: "Other platforms",
-  screenshotAlt:
-    "DiskSieve showing the Downloads folder: a list of the largest files on the left and a treemap of the same files on the right.",
 } as const;
+
+/** Hero screenshots (app demo data), in crossfade order. Files live in `src/assets/screens/<key>.png`. */
+export const screens = [
+  {
+    key: "explorer",
+    label: "Explorer",
+    alt: "DiskSieve showing the Downloads folder: the largest files listed on the left and a treemap colored by file type on the right.",
+  },
+  {
+    key: "devjunk",
+    label: "Dev Junk",
+    alt: "The Dev Junk view: 35 GB of node_modules, Rust target, Python venv and Gradle folders across 13 projects, with the last code edit for each.",
+  },
+  {
+    key: "advisor",
+    label: "Safety Advisor",
+    alt: "The Safety Advisor for a 28.6 GB Docker cache folder: marked Safe to delete, with the command to reclaim the space.",
+  },
+  {
+    key: "sieve",
+    label: "Sieve",
+    alt: "The Sieve basket with eight items worth 60.7 GB: seven marked Safe to delete and one marked Review first.",
+  },
+  {
+    key: "changes",
+    label: "Changes",
+    alt: "The Changes view: 15.1 GB of growth since the previous scan, listing added, removed and grown files and folders.",
+  },
+  {
+    key: "duplicates",
+    label: "Duplicates",
+    alt: "The Duplicates view: 34.5 GB wasted in five groups of identical files, with the copy to keep marked in each group.",
+  },
+] as const;
 
 /** Lucide icon names, rendered as inline SVG at build time. */
 export type IconName =
