@@ -7,6 +7,14 @@ import { downloadTargets, faq, features, hero, links, meta, privacy, release, ro
 export const SITE = "https://disksieve.chrubasik.dev";
 const abs = (path: string) => new URL(path, SITE).href;
 
+/**
+ * Chrome origin trial token for WebMCP (src/scripts/webmcp.ts), registered for this origin at
+ * https://developer.chrome.com/origintrials. Public by design; empty means no `<meta http-equiv="origin-trial">`.
+ * Expires 2027-03-30 (Chrome 149–162); renew it, or remove it once WebMCP ships without a trial.
+ */
+export const webmcpOriginTrial =
+  "AlgxDPXOPgix4tShghPzX6C8aC+v7FkeWEo3G9cCL4oHQww2zY5q4QwwBPRrZZfUPdN9vXe1iDsqdbe+B1ZfawEAAABXeyJvcmlnaW4iOiJodHRwczovL2Rpc2tzaWV2ZS5jaHJ1YmFzaWsuZGV2OjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE4MDYzNjQ4MDB9";
+
 export const ogImage = {
   src: "/og.png",
   width: 1200,

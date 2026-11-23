@@ -4,7 +4,8 @@ import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 import Logo from "../assets/logo.svg";
 import { footer, links, meta, nav } from "../content/site";
-import { ogImage, structuredData } from "../content/seo";
+import { ogImage, structuredData, webmcpOriginTrial } from "../content/seo";
+import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 
 interface Props {
   title?: string;
@@ -24,11 +25,16 @@ const year = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0B0D0C" />
+    <!-- The headline font, fetched with the HTML instead of after the CSS is parsed. -->
+    <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="alternate" type="text/markdown" title="DiskSieve for AI assistants (llms.txt)" href="/llms.txt" />
+    <link rel="ard" type="application/json" href="/.well-known/ard.json" />
+    {webmcpOriginTrial && <meta http-equiv="origin-trial" content={webmcpOriginTrial} />}
     <title>{title}</title>
 
     <meta property="og:type" content="website" />
@@ -104,6 +110,7 @@ const year = new Date().getFullYear();
     </footer>
     <script>
       import "../scripts/reveal";
+      import "../scripts/webmcp";
     </script>
   </body>
 </html>

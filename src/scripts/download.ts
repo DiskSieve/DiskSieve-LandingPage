@@ -5,71 +5,12 @@
  * release from the GitHub API (no auth, cached in sessionStorage because of the 60 requests/hour limit), detects the
  * visitor's system and turns the links into direct downloads with file sizes. On any failure the page stays as it is.
  */
-import { downloadTargets, hero, links, type Os } from "../content/site";
-
-interface Asset {
-  name: string;
-  size: number;
-  url: string;
-}
-
-interface Release {
-  version: string;
-  date: string;
-  assets: Asset[];
-}
-
-interface GitHubRelease {
-  tag_name: string;
-  published_at: string;
-  assets: { name: string; size: number; browser_download_url: string }[];
-}
+import { downloadTargets, hero, type Os } from "../content/site";
+import { fetchRelease, find, formatSize, type Release } from "./release";
 
 interface UserAgentData {
   platform?: string;
 }
-
-const CACHE_KEY = "disksieve:release";
-const CACHE_TTL_MS = 60 * 60 * 1000;
-
-const readCache = (): Release | null => {
-  try {
-    const raw = sessionStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { at, release } = JSON.parse(raw) as { at: number; release: Release };
-    return Date.now() - at < CACHE_TTL_MS ? release : null;
-  } catch {
-    return null;
-  }
-};
-
-const writeCache = (release: Release) => {
-  try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), release }));
-  } catch {
-    /* storage unavailable (private mode, blocked): fetch again next time */
-  }
-};
-
-const fetchRelease = async (): Promise<Release | null> => {
-  const cached = readCache();
-  if (cached) return cached;
-  try {
-    const res = await fetch(links.latestReleaseApi, { headers: { Accept: "application/vnd.github+json" } });
-    if (!res.ok) return null;
-    const data = (await res.json()) as GitHubRelease;
-    if (!data.tag_name || !Array.isArray(data.assets)) return null;
-    const release: Release = {
-      version: data.tag_name.replace(/^v/, ""),
-      date: data.published_at.slice(0, 10),
-      assets: data.assets.map((a) => ({ name: a.name, size: a.size, url: a.browser_download_url })),
-    };
-    writeCache(release);
-    return release;
-  } catch {
-    return null;
-  }
-};
 
 /** Desktop system of the visitor, or null (phones, tablets, ChromeOS, unknown). */
 const detectOs = (): Os | null => {
@@ -81,16 +22,6 @@ const detectOs = (): Os | null => {
   if (/win/i.test(p)) return "windows";
   if (/linux|x11/i.test(p)) return "linux";
   return null;
-};
-
-const formatSize = (bytes: number) =>
-  bytes >= 1e9 ? `${(bytes / 1e9).toFixed(1)} GB` : `${Math.max(0.1, bytes / 1e6).toFixed(1)} MB`;
-
-const find = (assets: Asset[], pattern: string) => {
-  const re = new RegExp(pattern, "i");
-  const matches = assets.filter((a) => re.test(a.name));
-  // If a release ever ships per-architecture files, prefer Apple Silicon / 64-bit builds.
-  return matches.find((a) => /aarch64|arm64|universal/i.test(a.name)) ?? matches[0];
 };
 
 const setText = (selector: string, text: string) => {
