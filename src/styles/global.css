@@ -10,6 +10,7 @@
   --color-primary: #22c55e;
   --color-primary-foreground: #04120a;
   --color-danger: #ef4444;
+  --color-warning: oklch(0.8 0.15 75);
 
   --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
